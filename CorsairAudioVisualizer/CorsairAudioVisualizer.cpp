@@ -1,10 +1,12 @@
 #include "Utils.h"
+#define VERSION "0.1.1"
 
 int initializeCorsairLighting(std::vector<std::vector<CorsairLedColor>>& memoryLeds, std::vector<CorsairDevice>& devices) {
 	// Preflight, make sure everything's working
 	CorsairPerformProtocolHandshake();
 	if (const auto error = CorsairGetLastError()) {
-		std::cout << "Handshake failed: " << crsErrorToString(error) << "\nPress any key to quit." << std::endl;
+		std::cout << "Handshake failed: " << crsErrorToString(error) << std::endl;
+		std::cout << "Handshake failed: " << crsErrorToString(error) << std::endl;
 		return -1;
 	}
 
@@ -21,7 +23,7 @@ int initializeCorsairLighting(std::vector<std::vector<CorsairLedColor>>& memoryL
 		if (device.info->type == CDT_MemoryModule && memory.size() < 2) memory.push_back(device.index);
 	}
 	if (memory.size() != 2) {
-		std::cout << "Could not find two memory modules." << "\nPress any key to quit." << std::endl;
+		std::cout << "Initialization failed: Could not find two memory modules." << std::endl;
 		return -1;
 	}
 
@@ -39,6 +41,8 @@ int initializeCorsairLighting(std::vector<std::vector<CorsairLedColor>>& memoryL
 		for (auto& ledId : ledSet) colors.push_back({ static_cast<CorsairLedId>(ledId), 0, 0, 0 });
 		memoryLeds.push_back(colors);
 	}
+
+	return 0;
 }
 
 // Audio capture thread
@@ -318,22 +322,27 @@ int processCommand(std::string& cmd, VisualizerOptions& opt, std::ostream& out =
 		else out << "No help available" << std::endl;
 		return 0;
 	}
+	if (cmds[0] == "version") {
+		out << "Corsair Audio Visualizer v" << VERSION << std::endl;
+		return 0;
+	}
 
 	out << cmds[0] << " is not a valid command\nType 'help' for a list of commands" << std::endl;
 	return 0;
 }
 
 int main() {
-	SetConsoleTitle(L"Corsair Audio Visualizer v0.1");
+	SetConsoleTitle(L"Corsair Audio Visualizer");
 
 	std::vector<std::vector<CorsairLedColor>> memoryLeds;
 	std::vector<CorsairDevice> devices;
 
 	// Initialize Corsair API and find relevant LEDs
 	std::cout << "Initializing Corsair API..." << std::endl;
-	if (initializeCorsairLighting(memoryLeds, devices) < 0) {
-		getchar();
-		return 0;
+	while (initializeCorsairLighting(memoryLeds, devices) < 0) {
+		std::cout << "Retry initialization? [Y/n]" << std::endl;
+		char in = getchar();
+		if (in == 'n' || in == 'N') return 0;
 	}
 
 	bool quit = false;
