@@ -1,0 +1,8 @@
+*.sln
+x64/
+Debug/
+Release/
+.vs/
+CorsairAudioVisualizer/x64/
+CorsairAudioVisualizer/Debug/
+CorsairAudioVisualizer/Release/
