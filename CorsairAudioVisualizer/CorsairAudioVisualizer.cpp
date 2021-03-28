@@ -6,7 +6,6 @@ int initializeCorsairLighting(std::vector<std::vector<CorsairLedColor>>& memoryL
 	CorsairPerformProtocolHandshake();
 	if (const auto error = CorsairGetLastError()) {
 		std::cout << "Handshake failed: " << crsErrorToString(error) << std::endl;
-		std::cout << "Handshake failed: " << crsErrorToString(error) << std::endl;
 		return -1;
 	}
 
@@ -336,13 +335,17 @@ int main() {
 
 	std::vector<std::vector<CorsairLedColor>> memoryLeds;
 	std::vector<CorsairDevice> devices;
+	int silentRetry = 5;
 
 	// Initialize Corsair API and find relevant LEDs
 	std::cout << "Initializing Corsair API..." << std::endl;
 	while (initializeCorsairLighting(memoryLeds, devices) < 0) {
-		std::cout << "Retry initialization? [Y/n]" << std::endl;
-		char in = getchar();
-		if (in == 'n' || in == 'N') return 0;
+		if (silentRetry-- > 0) Sleep(5000);
+		else {
+			std::cout << "Retry initialization? [Y/n]" << std::endl;
+			char in = getchar();
+			if (in == 'n' || in == 'N') return 0;
+		}
 	}
 
 	bool quit = false;
