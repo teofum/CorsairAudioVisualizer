@@ -1,5 +1,5 @@
 #include "Utils.h"
-#define VERSION "0.1.1"
+#define VERSION "0.2.0"
 
 int initializeCorsairLighting(std::vector<std::vector<CorsairLedColor>>& memoryLeds, std::vector<CorsairDevice>& devices) {
 	// Preflight, make sure everything's working
@@ -288,7 +288,7 @@ int processCommand(std::string& cmd, VisualizerOptions& opt, std::ostream& out =
 			out << "save: must specify profile name" << std::endl;
 			return 0;
 		}
-		saveProfile(opt, cmds[1].c_str());
+		saveProfile(opt, (cmds[1] + ".cavprof").c_str());
 		return 0;
 	}
 	if (cmds[0] == "load") {
@@ -297,7 +297,7 @@ int processCommand(std::string& cmd, VisualizerOptions& opt, std::ostream& out =
 			return 0;
 		}
 
-		std::ifstream file(cmds[1].c_str(), std::ios::in);
+		std::ifstream file((cmds[1] + ".cavprof").c_str(), std::ios::in);
 		if (!file.good()) {
 			out << "load: failed to open file" << std::endl;
 			return 0;
@@ -310,6 +310,17 @@ int processCommand(std::string& cmd, VisualizerOptions& opt, std::ostream& out =
 			line = "set " + line;
 			processCommand(line, opt);
 		}
+		return 0;
+	}
+	if (cmds[0] == "list" || cmds[0] == "ls") {
+		std::vector<std::string> list;
+		listDirectory(".", list);
+
+		for (int i = 0; i < list.size(); i++) {
+			if (list[i].size() > 8 && list[i].substr(list[i].size() - 8) == ".cavprof")
+				out << list[i].substr(0, list[i].size() - 8) << std::endl;
+		}
+
 		return 0;
 	}
 	if (cmds[0] == "help") {

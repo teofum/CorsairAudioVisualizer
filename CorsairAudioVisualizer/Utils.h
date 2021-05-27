@@ -119,3 +119,17 @@ int saveProfile(VisualizerOptions& opt, const char* name) {
 	file << "frequency " << opt.frequency << std::endl;
 	file << "multicolor " << (opt.multicolor ? "true" : "false");
 }
+
+// Define a unary operation to get a filename (leaf) string from a path object
+struct pathLeafStr {
+	std::string operator()(const std::filesystem::directory_entry& entry) const {
+		return entry.path().filename().string();
+	}
+};
+
+void listDirectory(const std::string& dir, std::vector<std::string>& ls) {
+	std::filesystem::path path(dir);
+	std::filesystem::directory_iterator start(path);
+	std::filesystem::directory_iterator end;
+	std::transform(start, end, std::back_inserter(ls), pathLeafStr());
+}
