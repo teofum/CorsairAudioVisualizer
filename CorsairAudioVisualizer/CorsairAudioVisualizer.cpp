@@ -1,6 +1,6 @@
 #include "Utils.h"
 #include "AudioCapture.h"
-#define VERSION "0.3.0"
+#define VERSION "0.3.1"
 
 int initializeCorsairLighting(std::vector<CorsairLedArray>& memoryLeds, std::vector<CorsairDevice>& devices) {
 	// Preflight, make sure everything's working
@@ -128,13 +128,13 @@ int processCommand(std::string& cmd, VisualizerOptions& opt, std::ostream& out =
 			return 0;
 		}
 		if (cmds[1] == "effect") {
-			if (cmds[2] == "bars") {
+			if (cmds[2] == BarsEffect::Name) {
 				AudioLightingEffect* newEffect = new BarsEffect(*(opt.effect));
 				delete opt.effect;
 				opt.effect = newEffect;
 				return 0;
 			}
-			if (cmds[2] == "pulse") {
+			if (cmds[2] == PulseEffect::Name) {
 				AudioLightingEffect* newEffect = new PulseEffect(*(opt.effect));
 				delete opt.effect;
 				opt.effect = newEffect;

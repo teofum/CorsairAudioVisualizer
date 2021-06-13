@@ -21,10 +21,13 @@ public:
 	{ }
 
 	virtual void effect(VisualizerOptions*, UINT32, float*) = 0;
+	inline virtual const char* name() = 0;
 };
 
 class BarsEffect : public AudioLightingEffect {
 public:
+	static constexpr const char* Name = "bars";
+
 	BarsEffect(std::vector<CorsairLedArray>* leds, std::vector<CorsairDevice>* devices)
 		: AudioLightingEffect(leds, devices)
 	{ }
@@ -34,10 +37,13 @@ public:
 	{ }
 
 	void effect(VisualizerOptions*, UINT32, float*);
+	inline const char* name() { return BarsEffect::Name; }
 };
 
 class PulseEffect : public AudioLightingEffect {
 public:
+	static constexpr const char* Name = "pulse";
+
 	PulseEffect(std::vector<CorsairLedArray>* leds, std::vector<CorsairDevice>* devices)
 		: AudioLightingEffect(leds, devices)
 	{ }
@@ -47,4 +53,5 @@ public:
 	{ }
 
 	void effect(VisualizerOptions*, UINT32, float*);
+	inline const char* name() { return PulseEffect::Name; }
 };

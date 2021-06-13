@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include "LightingEffect.h"
 
 const char* crsErrorToString(CorsairError error) {
 	switch (error) {
@@ -68,7 +69,8 @@ int saveProfile(VisualizerOptions& opt, const char* name) {
 	file << "fall " << opt.fall << std::endl;
 	file << "hold " << opt.hold << std::endl;
 	file << "frequency " << opt.frequency << std::endl;
-	file << "multicolor " << (opt.multicolor ? "true" : "false");
+	file << "multicolor " << (opt.multicolor ? "true" : "false") << std::endl;
+	file << "effect " << opt.effect->name();
 }
 
 void listDirectory(const std::string& dir, std::vector<std::string>& ls) {
