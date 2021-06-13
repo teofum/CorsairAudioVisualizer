@@ -3,8 +3,7 @@
 // Audio capture thread
 HRESULT audioCapture(
 	std::atomic_bool* exit,
-	VisualizerOptions* opt,
-	AudioLightingEffect* effect
+	VisualizerOptions* opt
 ) {
 	// Various UUIDs we need to identify things and tell Windows what we want to create and/or work with
 	const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
@@ -91,7 +90,7 @@ HRESULT audioCapture(
 			if (FAILED(hr)) goto Exit;
 
 			// Lighting effect
-			effect->effect(opt, framesAvailable, (float*)data);
+			opt->effect->effect(opt, framesAvailable, (float*)data);
 			// End of lighting effect
 
 			hr = captureClient->ReleaseBuffer(framesAvailable);

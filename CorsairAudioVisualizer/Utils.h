@@ -25,7 +25,9 @@ struct Color {
 	int b;
 };
 
+class AudioLightingEffect;
 struct VisualizerOptions {
+	AudioLightingEffect* effect;
 	Color background;
 	Color* colors;
 	float gain;

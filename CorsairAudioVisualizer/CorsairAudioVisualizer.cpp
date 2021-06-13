@@ -1,6 +1,6 @@
 #include "Utils.h"
 #include "AudioCapture.h"
-#define VERSION "0.2.0"
+#define VERSION "0.3.0"
 
 int initializeCorsairLighting(std::vector<CorsairLedArray>& memoryLeds, std::vector<CorsairDevice>& devices) {
 	// Preflight, make sure everything's working
@@ -127,6 +127,23 @@ int processCommand(std::string& cmd, VisualizerOptions& opt, std::ostream& out =
 			opt.hold = std::stof(cmds[2]);
 			return 0;
 		}
+		if (cmds[1] == "effect") {
+			if (cmds[2] == "bars") {
+				AudioLightingEffect* newEffect = new BarsEffect(*(opt.effect));
+				delete opt.effect;
+				opt.effect = newEffect;
+				return 0;
+			}
+			if (cmds[2] == "pulse") {
+				AudioLightingEffect* newEffect = new PulseEffect(*(opt.effect));
+				delete opt.effect;
+				opt.effect = newEffect;
+				return 0;
+			}
+
+			out << "set effect: " << cmds[2] << " is not a valid effect name" << std::endl;
+			return 0;
+		}
 
 		out << "set: " << cmds[1] << " is not a valid property name" << std::endl;
 		return 0;
@@ -210,13 +227,13 @@ int main() {
 	bool quit = false;
 	std::atomic_bool reset{ false };
 
+	// Initialize lighting effect
+	AudioLightingEffect* effect = new BarsEffect(&memoryLeds, &devices);
+
 	// Initialize options
 	Color colors[10];
 	for (int i = 0; i < 10; i++) colors[i] = { 255, 255, 255 };
-	VisualizerOptions opt{ { 0, 0, 0 }, colors, 20, 0, 0, 100, true, true };
-
-	// Initialize lighting effect
-	BarsEffect effect(&memoryLeds, &devices);
+	VisualizerOptions opt{ effect, { 0, 0, 0 }, colors, 20, 0, 0, 100, true, true };
 
 	std::string def = "load default";
 	processCommand(def, opt);
@@ -224,7 +241,7 @@ int main() {
 	while (!quit) {
 		reset = false;
 		std::cout << "Starting..." << std::endl;
-		std::thread workerThread(audioCapture, &reset, &opt, &effect);
+		std::thread workerThread(audioCapture, &reset, &opt);
 
 		std::string cmd;
 		std::cout << "Enter a command\nType 'help' for a list of commands, 'quit' to exit" << std::endl;

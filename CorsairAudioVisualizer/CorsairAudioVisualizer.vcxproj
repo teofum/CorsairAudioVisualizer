@@ -161,6 +161,7 @@
     <ClCompile Include="AudioCapture.cpp" />
     <ClCompile Include="CorsairAudioVisualizer.cpp" />
     <ClCompile Include="BarsEffect.cpp" />
+    <ClCompile Include="PulseEffect.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
