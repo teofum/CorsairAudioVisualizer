@@ -55,3 +55,19 @@ public:
 	void effect(VisualizerOptions*, UINT32, float*);
 	inline const char* name() { return PulseEffect::Name; }
 };
+
+class DoubleBarsEffect : public AudioLightingEffect {
+public:
+	static constexpr const char* Name = "doublebars";
+
+	DoubleBarsEffect(std::vector<CorsairLedArray>* leds, std::vector<CorsairDevice>* devices)
+		: AudioLightingEffect(leds, devices)
+	{ }
+
+	DoubleBarsEffect(const AudioLightingEffect& other)
+		: AudioLightingEffect(other)
+	{ }
+
+	void effect(VisualizerOptions*, UINT32, float*);
+	inline const char* name() { return DoubleBarsEffect::Name; }
+};
